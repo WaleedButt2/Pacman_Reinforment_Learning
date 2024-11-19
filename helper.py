@@ -152,7 +152,28 @@ def find_far_target(maze, start, distance_threshold=15):
                 distance = abs(start[0] - row) + abs(start[1] - col)  # Manhattan distance
                 if distance >= distance_threshold:
                     far_targets.append((row, col))
-    return random.choice(far_targets) if far_targets else start  # Return a random far target or stay in place
+    if far_targets:
+        return random.choice(far_targets)
+    else:
+        # If no far targets found, reduce the threshold
+        print("No far targets found. Reducing distance threshold.")
+        return find_near_target(maze, start, distance_threshold)
+
+def find_near_target(maze, start, distance_threshold):
+    """Find a valid target closer to the start position."""
+    for threshold in range(distance_threshold - 1, 0, -1):
+        near_targets = []
+        for row in range(ROWS):
+            for col in range(COLS):
+                if maze[row][col] == 0:
+                    distance = abs(start[0] - row) + abs(start[1] - col)
+                    if distance == threshold:
+                        near_targets.append((row, col))
+        if near_targets:
+            return random.choice(near_targets)
+    # If no targets found, return the starting position
+    return start
+
 
 
 def bfs_pathfinding(maze, start, target):
@@ -175,16 +196,31 @@ def bfs_pathfinding(maze, start, target):
     return []  # Return empty path if no valid path found
 
 def move_enemies(enemies, maze):
-    """Move all enemies toward far-away targets using BFS."""
     for enemy in enemies:
         # If the enemy has no target or reached its target, assign a new far target
         if enemy["target"] is None or enemy["pos"] == enemy["target"]:
             enemy["target"] = find_far_target(maze, enemy["pos"])
+            print(f"Enemy at {enemy['pos']} assigned new target {enemy['target']}")
 
         # Find the path to the target using BFS
         path = bfs_pathfinding(maze, enemy["pos"], enemy["target"])
-        if path:  # If there's a valid path, move to the next step on the path
+        if path:
             enemy["pos"] = path[0]
+            print(f"Enemy moved to {enemy['pos']}")
+        else:
+            print(f"Enemy at {enemy['pos']} could not find a path to {enemy['target']}, moving randomly.")
+            # Move randomly
+            valid_moves = [direction for direction in DIRECTIONS.values()
+                           if is_valid_move(move_entity(enemy["pos"], direction), maze)]
+            if valid_moves:
+                enemy["pos"] = move_entity(enemy["pos"], random.choice(valid_moves))
+                print(f"Enemy moved randomly to {enemy['pos']}")
+            else:
+                print(f"Enemy at {enemy['pos']} is stuck.")
+            # Assign a new target
+            enemy["target"] = None
+
+
 
 def get_reward(state, maze):
     row, col = state
