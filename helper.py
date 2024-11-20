@@ -112,22 +112,67 @@ def ensure_accessible(maze):
             if maze[row][col] == 0 and (row, col) not in visited:
                 maze[row][col] = 1  # Turn inaccessible space into a wall
 
+def draw_all_games(games):
+    """Draw all game instances on the screen arranged in a grid."""
+    screen = pygame.display.get_surface()
+    screen.fill(BLACK)  # Clear the screen before drawing
 
-def draw_maze(maze, player_pos, enemies):
-    """Draw the maze, player, food, and enemies."""
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    screen.fill(BLACK)
+    # Arrange games in a grid
+    grid_rows = 2
+    grid_cols = 3
+    game_width = SCREEN_WIDTH / grid_cols
+    game_height = SCREEN_HEIGHT / grid_rows
+    for index, game in enumerate(games):
+        row = index // grid_cols
+        col = index % grid_cols
+        x_offset = col * game_width
+        y_offset = row * game_height
+        draw_maze(game.maze, game.player_pos, game.enemies, x_offset, y_offset, game_width, game_height)
+
+
+def draw_maze(maze, player_pos, enemies, x_offset=0, y_offset=0, game_width=SCREEN_WIDTH, game_height=SCREEN_HEIGHT):
+    """Draw the maze, player, food, and enemies in a specified area."""
+    screen = pygame.display.get_surface()  # Get the main display surface
+
+    # Calculate cell sizes based on the game area dimensions
+    cell_width = game_width / COLS
+    cell_height = game_height / ROWS
+
+    # Draw the maze grid
     for row in range(ROWS):
         for col in range(COLS):
+            rect = pygame.Rect(
+                x_offset + col * cell_width,
+                y_offset + row * cell_height,
+                cell_width,
+                cell_height
+            )
             if maze[row][col] == 1:  # Wall
-                pygame.draw.rect(screen, BLUE, (col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE))
+                pygame.draw.rect(screen, BLUE, rect)
             elif maze[row][col] == 2:  # Food
-                pygame.draw.circle(screen, YELLOW, (col * TILE_SIZE + TILE_SIZE // 2, row * TILE_SIZE + TILE_SIZE // 2), TILE_SIZE // 4)
+                pygame.draw.circle(screen, YELLOW, rect.center, min(cell_width, cell_height) // 4)
+            else:
+                # Optional: Draw floor or empty space
+                pygame.draw.rect(screen, BLACK, rect)
+
     # Draw player
-    pygame.draw.rect(screen, GREEN, (player_pos[1] * TILE_SIZE, player_pos[0] * TILE_SIZE, TILE_SIZE, TILE_SIZE))
+    player_rect = pygame.Rect(
+        x_offset + player_pos[1] * cell_width,
+        y_offset + player_pos[0] * cell_height,
+        cell_width,
+        cell_height
+    )
+    pygame.draw.rect(screen, GREEN, player_rect)
+
     # Draw enemies
     for enemy in enemies:
-        pygame.draw.rect(screen, RED, (enemy["pos"][1] * TILE_SIZE, enemy["pos"][0] * TILE_SIZE, TILE_SIZE, TILE_SIZE))
+        enemy_rect = pygame.Rect(
+            x_offset + enemy["pos"][1] * cell_width,
+            y_offset + enemy["pos"][0] * cell_height,
+            cell_width,
+            cell_height
+        )
+        pygame.draw.rect(screen, RED, enemy_rect)
 
 
 def move_entity(pos, direction):
