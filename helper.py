@@ -171,7 +171,7 @@ def draw_maze(maze, player_pos, enemies, x_offset=0, y_offset=0, game_width=SCRE
     for enemy in enemies:
         enemy_center_x = x_offset + enemy["pos"][1] * cell_width + cell_width / 2
         enemy_center_y = y_offset + enemy["pos"][0] * cell_height + cell_height / 2
-        enemy_radius = min(cell_width, cell_height) // 3
+        enemy_radius = min(cell_width, cell_height) // 1.5
 
         # Define the triangle points
         triangle_points = [
