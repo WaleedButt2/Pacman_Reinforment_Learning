@@ -150,29 +150,36 @@ def draw_maze(maze, player_pos, enemies, x_offset=0, y_offset=0, game_width=SCRE
             if maze[row][col] == 1:  # Wall
                 pygame.draw.rect(screen, BLUE, rect)
             elif maze[row][col] == 2:  # Food
-                pygame.draw.circle(screen, YELLOW, rect.center, min(cell_width, cell_height) // 4)
+                pygame.draw.circle(
+                    screen,
+                    YELLOW,
+                    (int(rect.centerx), int(rect.centery)),
+                    min(cell_width, cell_height) // 4
+                )
             else:
                 # Optional: Draw floor or empty space
                 pygame.draw.rect(screen, BLACK, rect)
 
-    # Draw player
-    player_rect = pygame.Rect(
-        x_offset + player_pos[1] * cell_width,
-        y_offset + player_pos[0] * cell_height,
-        cell_width,
-        cell_height
+    # Draw player as a circle
+    player_center = (
+        int(x_offset + player_pos[1] * cell_width + cell_width / 2),
+        int(y_offset + player_pos[0] * cell_height + cell_height / 2),
     )
-    pygame.draw.rect(screen, GREEN, player_rect)
+    pygame.draw.circle(screen, GREEN, player_center, min(cell_width, cell_height) // 3)
 
-    # Draw enemies
+    # Draw enemies as triangles
     for enemy in enemies:
-        enemy_rect = pygame.Rect(
-            x_offset + enemy["pos"][1] * cell_width,
-            y_offset + enemy["pos"][0] * cell_height,
-            cell_width,
-            cell_height
-        )
-        pygame.draw.rect(screen, RED, enemy_rect)
+        enemy_center_x = x_offset + enemy["pos"][1] * cell_width + cell_width / 2
+        enemy_center_y = y_offset + enemy["pos"][0] * cell_height + cell_height / 2
+        enemy_radius = min(cell_width, cell_height) // 3
+
+        # Define the triangle points
+        triangle_points = [
+            (enemy_center_x, enemy_center_y - enemy_radius),  # Top
+            (enemy_center_x - enemy_radius, enemy_center_y + enemy_radius),  # Bottom-left
+            (enemy_center_x + enemy_radius, enemy_center_y + enemy_radius),  # Bottom-right
+        ]
+        pygame.draw.polygon(screen, RED, triangle_points)
 
 
 def move_entity(pos, direction):
