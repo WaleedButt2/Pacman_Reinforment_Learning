@@ -165,7 +165,7 @@ def draw_maze(maze, player_pos, enemies, x_offset=0, y_offset=0, game_width=SCRE
         int(x_offset + player_pos[1] * cell_width + cell_width / 2),
         int(y_offset + player_pos[0] * cell_height + cell_height / 2),
     )
-    pygame.draw.circle(screen, GREEN, player_center, min(cell_width, cell_height) // 3)
+    pygame.draw.circle(screen, GREEN, player_center, min(cell_width, cell_height) // 1.5)
 
     # Draw enemies as triangles
     for enemy in enemies:
