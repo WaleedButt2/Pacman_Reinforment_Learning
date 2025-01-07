@@ -2,7 +2,7 @@ import pygame
 WIDTH, HEIGHT = 400,400  # Window size
 TILE_SIZE = 10  # Size of each tile
 ROWS, COLS = HEIGHT // TILE_SIZE, WIDTH // TILE_SIZE
-FPS = 10
+FPS = 2000
 SCREEN_WIDTH = 800  # Or any desired width
 SCREEN_HEIGHT = 600  # Or any desired height
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))

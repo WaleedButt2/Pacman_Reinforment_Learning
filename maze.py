@@ -1,3 +1,4 @@
+def SARSA_Update(policy, prev_player_pos,new_player_pos,estimated_value_grid, enemies, reward_maze, grid_size=5,learning_rate=0.1, discount=0.9):
 import pygame
 import random
 from collections import deque
