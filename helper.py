@@ -43,7 +43,7 @@ def create_maze(rows, cols):
             if maze[row][col] == 0:
                 maze[row][col] = 2  # Food
 
-    return maze
+    return np.array(maze)
 
 def partition_maze_optimized(maze, s):
     x, y = s
@@ -118,8 +118,8 @@ def draw_all_games(games):
     screen.fill(BLACK)  # Clear the screen before drawing
 
     # Arrange games in a grid
-    grid_rows = 2
-    grid_cols = 3
+    grid_rows = 1
+    grid_cols = 1
     game_width = SCREEN_WIDTH / grid_cols
     game_height = SCREEN_HEIGHT / grid_rows
     for index, game in enumerate(games):
@@ -208,7 +208,7 @@ def find_far_target(maze, start, distance_threshold=15):
         return random.choice(far_targets)
     else:
         # If no far targets found, reduce the threshold
-        print("No far targets found. Reducing distance threshold.")
+        #print("No far targets found. Reducing distance threshold.")
         return find_near_target(maze, start, distance_threshold)
 
 def find_near_target(maze, start, distance_threshold):
@@ -252,23 +252,24 @@ def move_enemies(enemies, maze):
         # If the enemy has no target or reached its target, assign a new far target
         if enemy["target"] is None or enemy["pos"] == enemy["target"]:
             enemy["target"] = find_far_target(maze, enemy["pos"])
-            print(f"Enemy at {enemy['pos']} assigned new target {enemy['target']}")
+            #print(f"Enemy at {enemy['pos']} assigned new target {enemy['target']}")
 
         # Find the path to the target using BFS
         path = bfs_pathfinding(maze, enemy["pos"], enemy["target"])
         if path:
             enemy["pos"] = path[0]
-            print(f"Enemy moved to {enemy['pos']}")
+            #print(f"Enemy moved to {enemy['pos']}")
         else:
-            print(f"Enemy at {enemy['pos']} could not find a path to {enemy['target']}, moving randomly.")
+            #print(f"Enemy at {enemy['pos']} could not find a path to {enemy['target']}, moving randomly.")
             # Move randomly
             valid_moves = [direction for direction in DIRECTIONS.values()
                            if is_valid_move(move_entity(enemy["pos"], direction), maze)]
             if valid_moves:
                 enemy["pos"] = move_entity(enemy["pos"], random.choice(valid_moves))
-                print(f"Enemy moved randomly to {enemy['pos']}")
+                #print(f"Enemy moved randomly to {enemy['pos']}")
             else:
-                print(f"Enemy at {enemy['pos']} is stuck.")
+                pass
+                #print(f"Enemy at {enemy['pos']} is stuck.")
             # Assign a new target
             enemy["target"] = None
 

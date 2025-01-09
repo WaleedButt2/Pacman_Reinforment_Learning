@@ -2,7 +2,7 @@ import pygame
 WIDTH, HEIGHT = 400,400  # Window size
 TILE_SIZE = 10  # Size of each tile
 ROWS, COLS = HEIGHT // TILE_SIZE, WIDTH // TILE_SIZE
-FPS = 20
+FPS = 200
 SCREEN_WIDTH = 800  # Or any desired width
 SCREEN_HEIGHT = 600  # Or any desired height
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -15,7 +15,7 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 YELLOW = (255, 255, 0)
 
-num_enemies=5
+num_enemies=3
 
 DIRECTIONS = {
     pygame.K_w: (-1, 0),  # Up
